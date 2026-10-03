@@ -18,6 +18,7 @@ android {
 
 dependencies {
     api(project(":domain"))
+    api(project(":core:common"))
     val bom = platform(libs.compose.bom)
     api(bom)
     api(libs.compose.ui)

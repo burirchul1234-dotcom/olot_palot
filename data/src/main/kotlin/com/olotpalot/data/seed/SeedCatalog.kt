@@ -80,17 +80,17 @@ object SeedMedia {
     const val AUDIO_B = "https://storage.googleapis.com/exoplayer-test-media-0/Jazz_In_Paris.mp3"
     private const val GTV = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample"
     const val SINTEL = "$GTV/Sintel.mp4"
-    const val SINTEL_THUMB = "$GTV/images/Sintel.jpg"
+    const val SINTEL_THUMB = "https://picsum.photos/seed/sintel-still/1200/675"
     const val TEARS = "$GTV/TearsOfSteel.mp4"
-    const val TEARS_THUMB = "$GTV/images/TearsOfSteel.jpg"
+    const val TEARS_THUMB = "https://picsum.photos/seed/tears-still/1200/675"
     const val ELEPHANTS = "$GTV/ElephantsDream.mp4"
-    const val ELEPHANTS_THUMB = "$GTV/images/ElephantsDream.jpg"
+    const val ELEPHANTS_THUMB = "https://picsum.photos/seed/elephants-still/1200/675"
     const val BUNNY = "$GTV/BigBuckBunny.mp4"
-    const val BUNNY_THUMB = "$GTV/images/BigBuckBunny.jpg"
+    const val BUNNY_THUMB = "https://picsum.photos/seed/bunny-still/1200/675"
     const val FUN = "$GTV/ForBiggerFun.mp4"
-    const val FUN_THUMB = "$GTV/images/ForBiggerFun.jpg"
+    const val FUN_THUMB = "https://picsum.photos/seed/harbour-still/1200/675"
     const val ESCAPES = "$GTV/ForBiggerEscapes.mp4"
-    const val ESCAPES_THUMB = "$GTV/images/ForBiggerEscapes.jpg"
+    const val ESCAPES_THUMB = "https://picsum.photos/seed/paperboats-still/1200/675"
 
     fun thumb(seed: String) = "https://picsum.photos/seed/$seed/600/800"
     fun hero(seed: String) = "https://picsum.photos/seed/$seed/1200/1500"
@@ -274,7 +274,7 @@ object SeedCatalog {
                 """,
                 author = SeedAuthors.studio, seed = "harbourfilm", category = SeedTaxa.shortFilm, genres = listOf(SeedTaxa.memoir), moods = listOf(SeedTaxa.calm, SeedTaxa.reflective),
                 tags = listOf("documentary", "harbour", "sea", "short"), daysAgo = 1,
-                video = SeedMedia.FUN to SeedMedia.FUN_THUMB, videoMinutes = 1, thumbnail = SeedMedia.FUN_THUMB, hero = SeedMedia.FUN_THUMB,
+                video = SeedMedia.FUN to SeedMedia.FUN_THUMB, videoMinutes = 1, thumbnail = SeedMedia.thumb("harbourfilm"), hero = SeedMedia.hero("harbourfilm"),
                 stats = ContentStats(views = 1_050, likes = 140, comments = 0, shares = 22, ratingAverage = 4.1f, ratingCount = 19, completions = 700),
             )
             story(
@@ -294,7 +294,7 @@ object SeedCatalog {
                 """,
                 author = SeedAuthors.studio, seed = "paperboats", category = SeedTaxa.shortFilm, genres = listOf(SeedTaxa.memoir), moods = listOf(SeedTaxa.warm, SeedTaxa.hopeful),
                 tags = listOf("monsoon", "children", "short", "city"), daysAgo = 17,
-                video = SeedMedia.ESCAPES to SeedMedia.ESCAPES_THUMB, videoMinutes = 1, thumbnail = SeedMedia.ESCAPES_THUMB, hero = SeedMedia.ESCAPES_THUMB,
+                video = SeedMedia.ESCAPES to SeedMedia.ESCAPES_THUMB, videoMinutes = 1, thumbnail = SeedMedia.thumb("paperboats"), hero = SeedMedia.hero("paperboats"),
                 stats = ContentStats(views = 2_900, likes = 410, comments = 0, shares = 75, ratingAverage = 4.3f, ratingCount = 52, completions = 2_100),
             )
 

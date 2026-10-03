@@ -18,7 +18,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import coil3.compose.AsyncImage
+import com.olotpalot.core.common.firstGrapheme
+import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.olotpalot.core.design.theme.OPMotion
@@ -39,15 +44,17 @@ fun Artwork(
     contentScale: ContentScale = ContentScale.Crop,
 ) {
     val c = OPTheme.colors
+    var loaded by remember(url) { mutableStateOf(false) }
     Box(modifier.clip(shape).background(c.surfaceRaised), contentAlignment = Alignment.Center) {
-        if (fallbackLetter != null) {
-            Text(fallbackLetter.take(1), style = OPTheme.type.numeral, color = c.rule)
+        if (fallbackLetter != null && !loaded) {
+            Text(fallbackLetter.firstGrapheme(), style = OPTheme.type.numeral, color = c.rule)
         }
         if (!url.isNullOrBlank()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(url).crossfade(OPMotion.standard).build(),
                 contentDescription = contentDescription,
                 contentScale = contentScale,
+                onState = { loaded = it is AsyncImagePainter.State.Success },
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(),
             )
         }

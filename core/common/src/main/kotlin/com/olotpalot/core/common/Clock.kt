@@ -57,3 +57,14 @@ object TimeFormat {
     private fun trim1(v: Double): String =
         if (v >= 10) v.toLong().toString() else "%.1f".format(v).removeSuffix(".0")
 }
+
+/** First user-perceived character (grapheme cluster) — a Bengali consonant keeps its vowel sign. */
+fun String.firstGrapheme(): String {
+    if (isEmpty()) return this
+    val it = java.text.BreakIterator.getCharacterInstance()
+    it.setText(this)
+    val end = it.next()
+    return if (end > 0) substring(0, end) else take(1)
+}
+
+fun String.dropFirstGrapheme(): String = drop(firstGrapheme().length)

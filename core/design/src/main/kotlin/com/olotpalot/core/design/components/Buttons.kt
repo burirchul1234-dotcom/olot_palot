@@ -10,6 +10,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -95,6 +96,7 @@ fun SecondaryButton(
 fun TextAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, color: Color = OPTheme.colors.ink) {
     Column(
         modifier
+            .width(IntrinsicSize.Max)
             .clip(OPShapes.control)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 4.dp, vertical = 6.dp),
@@ -118,6 +120,7 @@ fun ModeButton(
     primary: Boolean = false,
     icon: ImageVector? = null,
     progress: Float = 0f,
+    compact: Boolean = false,
 ) {
     val c = OPTheme.colors
     val bg = if (primary) c.ink else Color.Transparent
@@ -128,10 +131,10 @@ fun ModeButton(
             .background(bg)
             .then(if (primary) Modifier else Modifier.border(1.dp, c.ink.copy(alpha = 0.35f), OPShapes.control))
             .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 11.dp),
+            .padding(horizontal = if (compact) 10.dp else 14.dp, vertical = 11.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (icon != null) {
+            if (icon != null && !compact) {
                 Icon(icon, null, Modifier.size(16.dp), tint = fg)
                 Spacer(Modifier.width(7.dp))
             }
@@ -182,6 +185,7 @@ fun TextToggle(text: String, selected: Boolean, onClick: () -> Unit, modifier: M
     val c = OPTheme.colors
     Column(
         modifier
+            .width(IntrinsicSize.Max)
             .clip(OPShapes.control)
             .clickable(role = Role.Checkbox, onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 8.dp),

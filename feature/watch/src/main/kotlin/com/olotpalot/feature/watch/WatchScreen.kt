@@ -144,9 +144,9 @@ private fun VideoFrame(item: ContentItem, large: Boolean, onPlay: () -> Unit, on
                 style = OPTheme.type.caption, color = paper,
                 modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
             )
-            if (large) Eyebrow("Featured", Modifier.align(Alignment.TopStart).padding(12.dp), color = paper.copy(alpha = 0.85f))
         }
         Column(Modifier.fillMaxWidth().clickable(role = Role.Button, onClickLabel = "Open story", onClick = onOpen).padding(top = 10.dp)) {
+            if (large) { Eyebrow("Featured", color = c.accent); Spacer(Modifier.height(6.dp)) }
             DisplayText(item.title, style = if (large) OPTheme.type.headline else OPTheme.type.title, maxLines = 2)
             Spacer(Modifier.height(4.dp))
             MetaLine(listOf(item.author.name, "${TimeFormat.compactCount(item.stats.views)} views", TimeFormat.relative(item.publishedAt)))

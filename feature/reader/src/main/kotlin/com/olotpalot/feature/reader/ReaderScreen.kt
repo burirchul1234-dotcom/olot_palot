@@ -100,7 +100,7 @@ fun ReaderScreen(onBack: () -> Unit, viewModel: ReaderViewModel = hiltViewModel(
             exit = fadeOut() + slideOutVertically { -it / 2 },
             modifier = Modifier.align(Alignment.TopCenter),
         ) {
-            Column(Modifier.fillMaxWidth().background(c.background.copy(alpha = 0.96f))) {
+            Column(Modifier.fillMaxWidth().background(c.background)) {
                 Row(
                     Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -120,7 +120,7 @@ fun ReaderScreen(onBack: () -> Unit, viewModel: ReaderViewModel = hiltViewModel(
         // Progress: always present, 2dp, bottom edge.
         Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth()) {
             AnimatedVisibility(visible = chromeVisible && state.ready, enter = fadeIn() + slideInVertically { it / 2 }, exit = fadeOut() + slideOutVertically { it / 2 }) {
-                Column(Modifier.fillMaxWidth().background(c.background.copy(alpha = 0.96f))) {
+                Column(Modifier.fillMaxWidth().background(c.background)) {
                     Rule()
                     Row(
                         Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp),
@@ -162,7 +162,7 @@ private fun ReaderBody(state: ReaderUiState, vm: ReaderViewModel, onToggleChrome
 
     // Jump to the saved paragraph when the chapter changes; the key is (chapter, requested paragraph).
     LaunchedEffect(state.chapterIndex, state.initialParagraph) {
-        listState.scrollToItem((state.initialParagraph + HEADER_ITEMS).coerceAtLeast(0))
+        listState.scrollToItem(if (state.initialParagraph <= 0) 0 else state.initialParagraph + HEADER_ITEMS)
     }
 
     LaunchedEffect(listState, state.chapterIndex) {

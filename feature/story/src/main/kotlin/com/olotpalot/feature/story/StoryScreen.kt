@@ -62,6 +62,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.olotpalot.core.common.TimeFormat
+import com.olotpalot.core.common.dropFirstGrapheme
+import com.olotpalot.core.common.firstGrapheme
 import com.olotpalot.core.design.components.Artwork
 import com.olotpalot.core.design.components.ContentRow
 import com.olotpalot.core.design.components.DisplayText
@@ -310,6 +312,7 @@ private fun ModeRow(item: ContentItem, user: UserContentState, access: AccessDec
                 primary = i == 0,
                 icon = if (locked) Icons.Outlined.Lock else mode.icon(),
                 progress = if (fraction in 0.02f..0.985f) fraction else 0f,
+                compact = modes.size >= 3,
             )
         }
     }
@@ -324,8 +327,8 @@ private fun DropCapParagraphs(text: String) {
         if (i == 0 && p.length > 1) {
             Text(
                 buildAnnotatedString {
-                    withStyle(SpanStyle(fontFamily = OPFonts.displayFor(p), fontSize = 34.sp, baselineShift = BaselineShift(-0.08f), color = c.accent)) { append(p.first()) }
-                    append(p.drop(1))
+                    withStyle(SpanStyle(fontFamily = OPFonts.displayFor(p), fontSize = 34.sp, baselineShift = BaselineShift(-0.08f), color = c.accent)) { append(p.firstGrapheme()) }
+                    append(p.dropFirstGrapheme())
                 },
                 style = OPTheme.type.body, color = c.ink,
             )

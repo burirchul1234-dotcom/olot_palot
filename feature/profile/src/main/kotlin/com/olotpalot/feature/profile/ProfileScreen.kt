@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.olotpalot.core.common.firstGrapheme
 import com.olotpalot.core.design.components.DisplayText
 import com.olotpalot.core.design.components.Eyebrow
 import com.olotpalot.core.design.components.InlineNotice
@@ -77,7 +78,7 @@ fun ProfileScreen(onOpenSection: (LibrarySection) -> Unit, viewModel: ProfileVie
         // Identity
         Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(top = 18.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(56.dp).clip(CircleShape).background(c.ink), contentAlignment = Alignment.Center) {
-                Text(state.prefs.displayName.take(1).uppercase(), style = OPTheme.type.title.copy(fontSize = 24.sp), color = c.background)
+                Text(state.prefs.displayName.firstGrapheme().uppercase(), style = OPTheme.type.title.copy(fontSize = 24.sp), color = c.background)
             }
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
