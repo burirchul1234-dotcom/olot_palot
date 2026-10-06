@@ -19,6 +19,7 @@ class ObserveHomeFeedUseCase @Inject constructor(
     private val content: ContentRepository,
     private val engagement: EngagementRepository,
     private val progress: ProgressRepository,
+    private val preferences: PreferencesRepository,
     private val ranking: RankingEngine,
     private val clock: Clock,
 ) {
@@ -27,7 +28,8 @@ class ObserveHomeFeedUseCase @Inject constructor(
         engagement.observeStates(),
         progress.observeContinue(limit = 5),
         content.observeTaxa(TaxonKind.MOOD),
-    ) { all, states, continueItems, moods ->
+        preferences.preferences,
+    ) { all, states, continueItems, moods, prefs ->
         val now = clock.now()
         val published = all.filter { it.isPublished }
         val continueIds = continueItems.map { it.content.id }.toSet()
@@ -40,7 +42,14 @@ class ObserveHomeFeedUseCase @Inject constructor(
             .sortedByDescending { ranking.trendingScore(it, now) }
             .take(7)
 
-        val interest = InterestProfiler.from(published, states)
+        val covers = listOfNotNull(featured) + trending.take(4)
+
+        // Daily pick: stable for a calendar day, rotates through the catalog, avoids the cover.
+        val dayIndex = (now / 86_400_000L).toInt()
+        val pool = published.filter { it.id != featured?.id }.sortedBy { it.id }
+        val today = pool.getOrNull(if (pool.isEmpty()) 0 else dayIndex % pool.size)
+
+        val interest = InterestProfiler.from(published, states, prefs.favouriteMoodIds)
         val hasSignal = interest.taxonWeights.isNotEmpty()
         val recommended = published
             .filter { it.id != featured?.id && it.id !in continueIds }
@@ -55,6 +64,9 @@ class ObserveHomeFeedUseCase @Inject constructor(
         val recent = published.sortedByDescending { it.publishedAt }.take(6)
 
         HomeFeed(
+            covers = covers,
+            today = today,
+            streak = prefs.streakCount,
             continueItems = continueItems,
             featured = featured,
             trending = trending,

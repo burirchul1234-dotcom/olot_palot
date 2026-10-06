@@ -69,6 +69,7 @@ fun ContentEntity.toDomain(media: List<MediaAsset>): ContentItem = ContentItem(
     media = media,
     chapterCount = chapterCount,
     stats = ContentStats(views, likes, comments, shares, ratingAverage, ratingCount, completions),
+    accentArgb = accentArgb,
 )
 
 fun ContentItem.toEntity() = ContentEntity(
@@ -83,6 +84,7 @@ fun ContentItem.toEntity() = ContentEntity(
     pageCount = pageCount, access = access.name, chapterCount = chapterCount,
     views = stats.views, likes = stats.likes, comments = stats.comments, shares = stats.shares,
     ratingAverage = stats.ratingAverage, ratingCount = stats.ratingCount, completions = stats.completions,
+    accentArgb = accentArgb,
 )
 
 fun MediaAssetEntity.toDomain() = MediaAsset(

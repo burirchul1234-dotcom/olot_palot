@@ -95,6 +95,9 @@ interface PreferencesRepository {
     suspend fun addRecentSearch(text: String)
     suspend fun clearRecentSearches()
     suspend fun setOnboarded()
+    suspend fun setFavouriteMoods(ids: Set<String>)
+    /** Records an app open for [isoDay]; returns the updated streak length. */
+    suspend fun recordDailyOpen(isoDay: String): Int
 }
 
 interface UserRepository {

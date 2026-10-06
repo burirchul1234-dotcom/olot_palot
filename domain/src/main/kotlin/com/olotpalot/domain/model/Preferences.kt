@@ -31,4 +31,9 @@ data class UserPreferences(
     val displayName: String = "Reader",
     val onboarded: Boolean = false,
     val recentSearches: List<String> = emptyList(),
+    /** Moods chosen on first launch; seed the recommendation profile before any behaviour exists. */
+    val favouriteMoodIds: Set<String> = emptySet(),
+    val streakCount: Int = 0,
+    /** ISO date (yyyy-MM-dd) of the last day the app was opened. */
+    val streakLastDay: String? = null,
 )

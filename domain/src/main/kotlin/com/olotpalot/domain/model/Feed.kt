@@ -9,6 +9,11 @@ data class Collection(
 )
 
 data class HomeFeed(
+    /** The swipeable cover stack at the top of Home: featured first, then the strongest trending. */
+    val covers: List<ContentItem>,
+    /** One story per calendar day, the same for everyone — something to come back for. */
+    val today: ContentItem?,
+    val streak: Int,
     val continueItems: List<ContinueItem>,
     val featured: ContentItem?,
     val trending: List<ContentItem>,

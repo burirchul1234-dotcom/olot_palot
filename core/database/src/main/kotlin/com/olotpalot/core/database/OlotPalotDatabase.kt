@@ -42,7 +42,7 @@ import javax.inject.Singleton
         BookmarkEntity::class, CommentEntity::class, EngagementEventEntity::class, HistoryEntity::class,
         AnalyticsEventEntity::class, RewardUnlockEntity::class, DownloadEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class OlotPalotDatabase : RoomDatabase() {
@@ -63,7 +63,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): OlotPalotDatabase =
         Room.databaseBuilder(context, OlotPalotDatabase::class.java, "olotpalot.db")
-            .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
+            .fallbackToDestructiveMigration(dropAllTables = true) // pre-release: schema still moving
             .build()
 
     @Provides fun contentDao(db: OlotPalotDatabase) = db.contentDao()

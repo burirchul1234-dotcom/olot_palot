@@ -32,4 +32,5 @@ dependencies {
     api(libs.coil.compose)
     api(libs.coil.network.okhttp)
     api(libs.androidx.core.ktx)
+    implementation(libs.androidx.palette)
 }

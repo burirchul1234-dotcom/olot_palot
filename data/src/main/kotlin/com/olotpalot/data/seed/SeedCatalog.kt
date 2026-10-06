@@ -128,6 +128,7 @@ object SeedCatalog {
             videoMinutes: Int = 0,
             thumbnail: String = SeedMedia.thumb(seed),
             hero: String = SeedMedia.hero(seed),
+            accent: Long = 0xFFB5432B,
             stats: ContentStats,
         ) {
             val published = now - daysAgo * DAY - (id.hashCode().mod(7)) * 3_600_000L
@@ -160,6 +161,7 @@ object SeedCatalog {
                 videoDurationMs = if (video != null) videoMinutes * MIN else 0,
                 pageCount = if (words > 0) maxOf(1, words / 300) else 0,
                 access = access, media = media, chapterCount = chapterList.size, stats = stats,
+                accentArgb = accent.toInt(),
             )
             chapters += chapterList
         }
@@ -176,7 +178,7 @@ object SeedCatalog {
         val b = Builder(now)
         with(b) {
             story(
-                id = "starlit-sea", title = "Echoes of the Starlit Sea", subtitle = "A lighthouse, a radio, and the last voice on the frequency",
+                id = "starlit-sea", accent = 0xFF2F4F5F, title = "Echoes of the Starlit Sea", subtitle = "A lighthouse, a radio, and the last voice on the frequency",
                 description = """
                     On an island that the ferries forgot, Noor keeps a lighthouse that no ship needs and a radio that nobody answers — until, one night, someone does.
                     A story about signals, tides, and the stubborn habit of hoping.
@@ -187,7 +189,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 18_420, likes = 2_310, comments = 4, shares = 310, ratingAverage = 4.7f, ratingCount = 412, completions = 6_100),
             )
             story(
-                id = "neon-harbor", title = "Midnight at Neon Harbor", subtitle = "Every light in the city is lying to someone",
+                id = "neon-harbor", accent = 0xFFB23A6E, title = "Midnight at Neon Harbor", subtitle = "Every light in the city is lying to someone",
                 description = """
                     Detective Ira Bose has one night to find out why a dockside cold-storage unit is warm — and why the man who reported it no longer exists.
                     Rain-slick noir with a harbour full of secrets.
@@ -198,7 +200,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 12_980, likes = 1_540, comments = 3, shares = 190, ratingAverage = 4.4f, ratingCount = 288, completions = 3_900),
             )
             story(
-                id = "clockwork-forest", title = "Whispers of the Clockwork Forest", subtitle = "Where the trees keep time and the birds keep secrets",
+                id = "clockwork-forest", accent = 0xFF3F6B3A, title = "Whispers of the Clockwork Forest", subtitle = "Where the trees keep time and the birds keep secrets",
                 description = """
                     When the great forest's central spring begins to slow, a young tuner named Pell must walk to its heart — past owls that tick and rivers that chime — to wind it before winter stops altogether.
                 """,
@@ -208,7 +210,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 9_120, likes = 1_205, comments = 2, shares = 140, ratingAverage = 4.8f, ratingCount = 201, completions = 3_300),
             )
             story(
-                id = "crimson-dune", title = "Shadows Beneath the Crimson Dune", subtitle = "The desert remembers what the map forgot",
+                id = "crimson-dune", accent = 0xFFB5432B, title = "Shadows Beneath the Crimson Dune", subtitle = "The desert remembers what the map forgot",
                 description = """
                     A caravan guide, a cartographer who lies, and a dune that moves against the wind. Tariq Haddad's slow-burning adventure across a desert that is older than its name.
                 """,
@@ -218,7 +220,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 7_450, likes = 820, comments = 1, shares = 96, ratingAverage = 4.2f, ratingCount = 150, completions = 2_010),
             )
             story(
-                id = "winter-garden", title = "The Alchemist's Winter Garden", subtitle = "Nothing grows here. Everything changes.",
+                id = "winter-garden", accent = 0xFF4A6A8A, title = "The Alchemist's Winter Garden", subtitle = "Nothing grows here. Everything changes.",
                 description = """
                     In a walled garden where frost is cultivated like fruit, an apprentice learns that transformation is mostly patience — and that her teacher has been turning something other than lead.
                 """,
@@ -228,7 +230,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 5_620, likes = 760, comments = 2, shares = 71, ratingAverage = 4.6f, ratingCount = 133, completions = 1_900),
             )
             story(
-                id = "coffee-rain", title = "Coffee, Rain, and Second Chances", subtitle = "A café, a storm, and twelve years of unsaid things",
+                id = "coffee-rain", accent = 0xFF8A5A3C, title = "Coffee, Rain, and Second Chances", subtitle = "A café, a storm, and twelve years of unsaid things",
                 description = """
                     The power goes out at Café Monsoon with two customers inside. One of them left town twelve years ago without a word. The other has been pouring coffee here ever since.
                 """,
@@ -238,7 +240,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 15_300, likes = 2_980, comments = 3, shares = 420, ratingAverage = 4.5f, ratingCount = 510, completions = 8_200),
             )
             story(
-                id = "unfinished-chronicles", title = "Unfinished Chronicles", subtitle = "Notes toward stories I never wrote",
+                id = "unfinished-chronicles", accent = 0xFF6B5E4A, title = "Unfinished Chronicles", subtitle = "Notes toward stories I never wrote",
                 description = """
                     Mira Sen opens her notebooks: openings without endings, characters who wandered off, and the quiet reasons some stories are better left half-told.
                 """,
@@ -248,7 +250,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 3_210, likes = 540, comments = 1, shares = 88, ratingAverage = 4.3f, ratingCount = 77, completions = 1_100),
             )
             story(
-                id = "nodir-opare", title = "নদীর ওপারে আলো", subtitle = "ফিরে আসার একটি গল্প",
+                id = "nodir-opare", accent = 0xFF2E7D6B, title = "নদীর ওপারে আলো", subtitle = "ফিরে আসার একটি গল্প",
                 description = """
                     বারো বছর পর তিতলি গ্রামে ফেরে। নদী আছে, ঘাট আছে, কিন্তু যে আলোটা ওপারে জ্বলত সেটা কে জ্বালাত, সে প্রশ্নের উত্তর এখনও কেউ দেয়নি।
                 """,
@@ -258,7 +260,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 8_800, likes = 1_410, comments = 2, shares = 230, ratingAverage = 4.6f, ratingCount = 190, completions = 3_000),
             )
             story(
-                id = "shesh-tram", title = "শহরের শেষ ট্রাম", subtitle = "একটি রাত, একটি রুট, একটি শহর",
+                id = "shesh-tram", accent = 0xFF9A6A1F, title = "শহরের শেষ ট্রাম", subtitle = "একটি রাত, একটি রুট, একটি শহর",
                 description = """
                     কলকাতার শেষ ট্রামে চড়ে এক রাতের যাত্রা। সৌম্য বসুর স্মৃতিকথা — যা হারিয়ে যাচ্ছে, আর যা থেকে যায়।
                 """,
@@ -268,7 +270,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 2_140, likes = 380, comments = 1, shares = 60, ratingAverage = 4.4f, ratingCount = 41, completions = 600),
             )
             story(
-                id = "small-harbour", title = "Field Notes from a Small Harbour", subtitle = "A short film",
+                id = "small-harbour", accent = 0xFF3E6B7A, title = "Field Notes from a Small Harbour", subtitle = "A short film",
                 description = """
                     One tide, four boats, and the people who wait for them. Shot over a single morning on a harbour wall.
                 """,
@@ -278,7 +280,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 1_050, likes = 140, comments = 0, shares = 22, ratingAverage = 4.1f, ratingCount = 19, completions = 700),
             )
             story(
-                id = "night-frequencies", title = "Night Frequencies", subtitle = "An audio drama in one act",
+                id = "night-frequencies", accent = 0xFF4B3F8C, title = "Night Frequencies", subtitle = "An audio drama in one act",
                 description = """
                     A late-night radio host takes a call from a listener who claims to be broadcasting from tomorrow. Headphones recommended.
                 """,
@@ -288,7 +290,7 @@ object SeedCatalog {
                 stats = ContentStats(views = 4_300, likes = 690, comments = 1, shares = 110, ratingAverage = 4.5f, ratingCount = 98, completions = 2_200),
             )
             story(
-                id = "paper-boats", title = "Paper Boats on the Monsoon Drain", subtitle = "A short film about the smallest regattas",
+                id = "paper-boats", accent = 0xFF2F7F8C, title = "Paper Boats on the Monsoon Drain", subtitle = "A short film about the smallest regattas",
                 description = """
                     Every monsoon the children of Lane 4 race paper boats down the storm drain. This year, the adults join in.
                 """,

@@ -80,7 +80,11 @@ import com.olotpalot.core.design.components.RatingStars
 import com.olotpalot.core.design.components.Rule
 import com.olotpalot.core.design.components.SectionHeader
 import com.olotpalot.core.design.components.TextAction
+import com.olotpalot.core.design.components.coverScrim
 import com.olotpalot.core.design.components.icon
+import com.olotpalot.core.design.components.rememberStoryTint
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.olotpalot.core.design.theme.OPFonts
 import com.olotpalot.core.design.theme.OPShapes
 import com.olotpalot.core.design.theme.OPTheme
@@ -168,13 +172,15 @@ private fun StoryContent(state: StoryUiState, vm: StoryViewModel, actions: Story
         }
 
         item("actions") {
+            val haptics = LocalHapticFeedback.current
+            val tap: (() -> Unit) -> () -> Unit = { action -> { haptics.performHapticFeedback(HapticFeedbackType.LongPress); action() } }
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = gutter - 4.dp).padding(top = 6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                IconAction(Icons.Outlined.ThumbUpOffAlt, TimeFormat.compactCount(item.stats.likes), vm::onLike, active = user.isLiked, activeIcon = Icons.Filled.ThumbUp, contentDescription = if (user.isLiked) "Unlike" else "Like")
-                IconAction(Icons.Outlined.FavoriteBorder, "Favourite", vm::onFavourite, active = user.isFavourite, activeIcon = Icons.Filled.Favorite)
-                IconAction(Icons.Outlined.BookmarkBorder, "Later", vm::onSaveForLater, active = user.isSavedForLater, activeIcon = Icons.Filled.Bookmark, contentDescription = "Save for later")
+                IconAction(Icons.Outlined.ThumbUpOffAlt, TimeFormat.compactCount(item.stats.likes), tap(vm::onLike), active = user.isLiked, activeIcon = Icons.Filled.ThumbUp, contentDescription = if (user.isLiked) "Unlike" else "Like")
+                IconAction(Icons.Outlined.FavoriteBorder, "Favourite", tap(vm::onFavourite), active = user.isFavourite, activeIcon = Icons.Filled.Favorite)
+                IconAction(Icons.Outlined.BookmarkBorder, "Later", tap(vm::onSaveForLater), active = user.isSavedForLater, activeIcon = Icons.Filled.Bookmark, contentDescription = "Save for later")
                 IconAction(Icons.Outlined.Share, "Share", vm::onShare)
             }
             Rule(Modifier.padding(horizontal = gutter, vertical = 8.dp))
@@ -255,9 +261,10 @@ private fun StoryContent(state: StoryUiState, vm: StoryViewModel, actions: Story
 @Composable
 private fun Hero(item: ContentItem, access: AccessDecision, onBack: () -> Unit) {
     val paper = Color(0xFFFBF8F2)
+    val tint by rememberStoryTint(item.heroUrl, item.accentArgb)
     Box(Modifier.fillMaxWidth().aspectRatio(4f / 5f).heightIn(max = 560.dp)) {
         Artwork(item.heroUrl, item.title, Modifier.matchParentSize(), shape = OPShapes.none, fallbackLetter = item.title)
-        Box(Modifier.matchParentSize().background(Brush.verticalGradient(0.45f to Color.Transparent, 1f to Color(0xE614110D))))
+        Box(Modifier.matchParentSize().background(coverScrim(tint)))
         Box(Modifier.matchParentSize().background(Brush.verticalGradient(0f to Color(0x6614110D), 0.25f to Color.Transparent)))
 
         Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(8.dp)) {

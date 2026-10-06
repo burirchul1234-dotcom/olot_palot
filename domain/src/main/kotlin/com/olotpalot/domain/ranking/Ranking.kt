@@ -87,8 +87,9 @@ class DeterministicRankingEngine(
 
 /** Derives a lightweight interest profile from what the user has engaged with. */
 object InterestProfiler {
-    fun from(items: List<ContentItem>, states: Map<String, UserContentState>): UserInterest {
+    fun from(items: List<ContentItem>, states: Map<String, UserContentState>, favouriteMoodIds: Set<String> = emptySet()): UserInterest {
         val taxa = HashMap<String, Float>()
+        favouriteMoodIds.forEach { taxa[it] = 2f }
         val authors = HashMap<String, Float>()
         val langs = HashMap<String, Float>()
         for (item in items) {

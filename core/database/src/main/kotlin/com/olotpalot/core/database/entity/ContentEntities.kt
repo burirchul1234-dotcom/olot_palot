@@ -52,6 +52,7 @@ data class ContentEntity(
     val ratingAverage: Float,
     val ratingCount: Int,
     val completions: Long,
+    val accentArgb: Int? = null,
 )
 
 @Entity(tableName = "media_assets", indices = [Index("contentId")])

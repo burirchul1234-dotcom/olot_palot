@@ -99,6 +99,8 @@ data class ContentItem(
     val media: List<MediaAsset> = emptyList(),
     val chapterCount: Int = 0,
     val stats: ContentStats = ContentStats(),
+    /** Editorial accent (ARGB) that tints this story's surfaces; refined at runtime from the artwork. */
+    val accentArgb: Int? = null,
 ) {
     val modes: List<ConsumptionMode>
         get() = buildList {

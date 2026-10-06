@@ -26,9 +26,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import com.olotpalot.core.common.TimeFormat
-import com.olotpalot.core.design.components.ContinueStrip
-import com.olotpalot.core.design.components.NavItem
-import com.olotpalot.core.design.components.TypographicNav
+import com.olotpalot.core.design.components.IconNav
+import com.olotpalot.core.design.components.MiniPlayer
+import com.olotpalot.core.design.components.NavIconItem
+import com.olotpalot.core.design.components.NavIcons
+import com.olotpalot.core.design.components.rememberStoryTint
+import com.olotpalot.feature.player.PlaybackController
+import com.olotpalot.feature.home.OnboardingScreen
 import com.olotpalot.core.design.theme.OPMotion
 import com.olotpalot.core.design.theme.OPTheme
 import com.olotpalot.core.navigation.CommentsRoute
@@ -60,14 +64,20 @@ import com.olotpalot.feature.story.StoryActions
 import com.olotpalot.feature.story.StoryScreen
 import com.olotpalot.feature.watch.WatchScreen
 
-private val navItems = TopLevel.entries.map { NavItem(it.key, it.label) }
+private val navItems = TopLevel.entries.map { val (i, si) = NavIcons.forKey(it.key); NavIconItem(it.key, it.label, i, si) }
 
 @Composable
 fun AppShell(mainViewModel: MainViewModel) {
+    val onboarded by mainViewModel.onboarded.collectAsStateWithLifecycle()
+    if (onboarded == false) {
+        OnboardingScreen(onDone = mainViewModel::completeOnboarding)
+        return
+    }
     val navController = rememberNavController()
     val backStack by navController.currentBackStackEntryAsState()
     val destination = backStack?.destination
     val continueItem by mainViewModel.continueItem.collectAsStateWithLifecycle()
+    val playback by mainViewModel.playback.state.collectAsStateWithLifecycle()
 
     val currentTop = TopLevel.entries.firstOrNull { top ->
         destination?.hierarchy?.any { d ->
@@ -95,27 +105,46 @@ fun AppShell(mainViewModel: MainViewModel) {
         ) {
             Column {
                 val ci = continueItem
+                val audio = playback.takeIf { it.isActive }
                 AnimatedVisibility(
-                    visible = ci != null && !onConsumptionOfSame,
+                    visible = audio != null || ci != null,
                     enter = fadeIn() + slideInVertically { it / 2 },
                     exit = fadeOut() + slideOutVertically { it / 2 },
                 ) {
-                    val item = ci ?: return@AnimatedVisibility
-                    val verb = when (item.mode) { ConsumptionMode.LISTEN -> "Listening"; ConsumptionMode.READ -> "Reading"; ConsumptionMode.WATCH -> "Watching" }
-                    ContinueStrip(
-                        eyebrow = "$verb  ·  ${TimeFormat.duration(item.remainingMs)} left",
-                        title = item.content.title,
-                        progress = item.fraction,
-                        artworkUrl = item.content.thumbnailUrl,
-                        onOpen = { navController.openMode(item.content.id, item.mode) },
-                        onDismiss = { mainViewModel.dismissContinue(item) },
-                    )
+                    if (audio != null) {
+                        val item = audio.item!!
+                        val tint by rememberStoryTint(item.thumbnailUrl, item.accentArgb)
+                        MiniPlayer(
+                            eyebrow = if (audio.hasChapters) "Listening  ·  ${audio.currentTitle}" else "Listening",
+                            title = item.title,
+                            progress = audio.overallFraction,
+                            artworkUrl = item.thumbnailUrl,
+                            tint = tint,
+                            isPlaying = audio.isPlaying,
+                            onTogglePlay = mainViewModel.playback::togglePlay,
+                            onOpen = { navController.navigate(ListenRoute(item.id)) { launchSingleTop = true } },
+                            onDismiss = mainViewModel.playback::stop,
+                        )
+                    } else if (ci != null) {
+                        val verb = when (ci.mode) { ConsumptionMode.LISTEN -> "Listening"; ConsumptionMode.READ -> "Reading"; ConsumptionMode.WATCH -> "Watching" }
+                        val tint by rememberStoryTint(ci.content.thumbnailUrl, ci.content.accentArgb)
+                        MiniPlayer(
+                            eyebrow = "$verb  ·  ${TimeFormat.duration(ci.remainingMs)} left",
+                            title = ci.content.title,
+                            progress = ci.fraction,
+                            artworkUrl = ci.content.thumbnailUrl,
+                            tint = tint,
+                            onOpen = { navController.openMode(ci.content.id, ci.mode) },
+                            onDismiss = { mainViewModel.dismissContinue(ci) },
+                        )
+                    }
                 }
-                TypographicNav(
+                IconNav(
                     items = navItems,
                     currentKey = currentTop?.key,
                     onSelect = { item ->
-                        val route: Any = when (TopLevel.entries.first { it.key == item.key }) {
+                        val top = TopLevel.entries.first { it.key == item.key }
+                        val route: Any = when (top) {
                             TopLevel.HOME -> HomeRoute
                             TopLevel.DISCOVER -> DiscoverRoute()
                             TopLevel.WATCH -> WatchRoute
@@ -126,6 +155,14 @@ fun AppShell(mainViewModel: MainViewModel) {
                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
+                        }
+                        // A tab tap always lands on the tab's root, never on a page restored inside it.
+                        when (top) {
+                            TopLevel.HOME -> navController.popBackStack(HomeRoute, inclusive = false)
+                            TopLevel.DISCOVER -> navController.popBackStack(DiscoverRoute(), inclusive = false)
+                            TopLevel.WATCH -> navController.popBackStack(WatchRoute, inclusive = false)
+                            TopLevel.LIBRARY -> navController.popBackStack(LibraryRoute, inclusive = false)
+                            TopLevel.PROFILE -> navController.popBackStack(ProfileRoute, inclusive = false)
                         }
                     },
                 )

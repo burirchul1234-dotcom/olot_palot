@@ -39,6 +39,9 @@ class PreferencesRepositoryImpl @Inject constructor(
         val customInk = intPreferencesKey("custom_ink")
         val customAccent = intPreferencesKey("custom_accent")
         val customDark = booleanPreferencesKey("custom_dark")
+        val favouriteMoods = stringPreferencesKey("favourite_moods")
+        val streakCount = intPreferencesKey("streak_count")
+        val streakLastDay = stringPreferencesKey("streak_last_day")
     }
 
     override val preferences: Flow<UserPreferences> = store.data.map { p ->
@@ -59,6 +62,9 @@ class PreferencesRepositoryImpl @Inject constructor(
             displayName = p[Keys.displayName] ?: "Reader",
             onboarded = p[Keys.onboarded] ?: false,
             recentSearches = p[Keys.recentSearches]?.split(SEP)?.filter { it.isNotBlank() } ?: emptyList(),
+            favouriteMoodIds = p[Keys.favouriteMoods]?.split(SEP)?.filter { it.isNotBlank() }?.toSet() ?: emptySet(),
+            streakCount = p[Keys.streakCount] ?: 0,
+            streakLastDay = p[Keys.streakLastDay],
         )
     }
 
@@ -107,6 +113,27 @@ class PreferencesRepositoryImpl @Inject constructor(
 
     override suspend fun setOnboarded() {
         store.edit { it[Keys.onboarded] = true }
+    }
+
+    override suspend fun setFavouriteMoods(ids: Set<String>) {
+        store.edit { it[Keys.favouriteMoods] = ids.joinToString(SEP) }
+    }
+
+    /** Consecutive days: same day keeps the streak, the next day extends it, any gap resets to 1. */
+    override suspend fun recordDailyOpen(isoDay: String): Int {
+        var result = 1
+        store.edit { p ->
+            val last = p[Keys.streakLastDay]
+            val count = p[Keys.streakCount] ?: 0
+            result = when {
+                last == isoDay -> maxOf(count, 1)
+                last != null && java.time.LocalDate.parse(last).plusDays(1).toString() == isoDay -> count + 1
+                else -> 1
+            }
+            p[Keys.streakCount] = result
+            p[Keys.streakLastDay] = isoDay
+        }
+        return result
     }
 
     private companion object {

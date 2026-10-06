@@ -75,13 +75,22 @@ class ScreenshotTour {
         prewarmImages(appCtx)
         scenario = ActivityScenario.launch(MainActivity::class.java)
         scenario.use {
+            // ---- First launch: mood picker
+            waitForText("What are you in the mood for?"); settle(images = false, ms = 1200)
+            snap("onboarding")
+            t("Calm").performClick(); t("Wistful").performClick(); settle()
+            snap("onboarding-picked")
+            t("Start with 2 moods").performClick()
+
             // ---- Home (Standard theme)
-            waitForText("Trending now")
-            settle(images = true)
-            snap("home-top")
+            waitForText("Today's story")
+            settle(images = true, ms = 2500)
+            snap("home-cover")
+            compose.onAllNodes(hasScrollToNodeAction())[0].performScrollToNode(hasText("Today's story", substring = true, ignoreCase = true)); settle()
+            snap("home-today")
             scrollTo("Trending now"); settle()
             snap("home-trending")
-            scrollTo("Browse by mood"); settle()
+            scrollTo("Moods"); settle()
             snap("home-moods")
             scrollTo("Recently added"); settle()
             snap("home-recent")
@@ -131,14 +140,16 @@ class ScreenshotTour {
                 compose.onNodeWithContentDescription("Back").performClick(); settle(ms = 1200)
             }
 
-            // ---- Back home: continue strip + progress
+            // ---- Back home: continue card + mini-player (audio keeps going)
             compose.onNodeWithContentDescription("Back").performClick()
             settle(); scrollTo("Olot Palot"); settle(images = true)
             snap("home-continue")
+            compose.onAllNodes(hasScrollToNodeAction())[0].performScrollToNode(hasText("min left", substring = true, ignoreCase = true)); settle()
+            snap("home-continue-card")
 
-            // ---- Watch
+            // ---- Watch feed
             t("Watch").performClick()
-            waitForText("Short films and stories with pictures"); settle(images = true)
+            waitForText("Swipe up for the next film"); settle(images = true)
             snap("watch")
 
             // ---- Library

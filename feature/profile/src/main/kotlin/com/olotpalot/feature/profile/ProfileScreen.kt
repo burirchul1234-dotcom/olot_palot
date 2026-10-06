@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddPhotoAlternate
+import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
@@ -86,6 +87,22 @@ fun ProfileScreen(onOpenSection: (LibrarySection) -> Unit, viewModel: ProfileVie
                 Text("Guest on this device", style = OPTheme.type.caption, color = c.inkMuted)
             }
             TextAction("Edit", { editingName = true }, color = c.inkMuted)
+        }
+
+        // Streak: the one number that's about coming back.
+        if (state.prefs.streakCount >= 1) {
+            Spacer(Modifier.height(18.dp))
+            Row(
+                Modifier.fillMaxWidth().clip(OPShapes.tile).background(c.accentSoft).padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Outlined.LocalFireDepartment, null, Modifier.size(22.dp), tint = c.accent)
+                Spacer(Modifier.width(10.dp))
+                Column {
+                    Text(if (state.prefs.streakCount > 1) "Day ${state.prefs.streakCount} in a row" else "Day one", style = OPTheme.type.label, color = c.ink)
+                    Text(if (state.prefs.streakCount > 1) "Open a story tomorrow to keep the thread." else "Come back tomorrow to start a streak.", style = OPTheme.type.caption, color = c.inkMuted)
+                }
+            }
         }
 
         // Statistics: four honest numbers, no vanity.
